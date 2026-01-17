@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personality Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Fajita&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'Poppins', sans-serif;background:linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('image.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;color:#fff;}
+.container{max-width:800px;margin:50px auto;background-color:rgba(0,0,0,0.7);padding:40px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.5);text-align:center;position:relative;z-index:1;}
+h2{font-family:'Fajita', sans-serif;font-size:36px;margin-bottom:20px;color:#ffd700;text-shadow:2px 2px 6px rgba(0,0,0,0.7);}
+.options{display:flex;flex-direction:column;gap:15px;margin-top:20px;}
+.option{background:#1c1c1c;padding:15px 20px;border-radius:10px;cursor:pointer;transition:0.3s;font-size:20px;}
+.option:hover{background:#ff4500;}
+.option.selected{background:#ffd700;color:#000;}
+.next-btn{margin-top:30px;background:#ff4500;color:#fff;font-size:22px;padding:15px 40px;border:none;border-radius:12px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;transition:0.3s;}
+.next-btn:hover{background:#e03e00;transform:scale(1.05);}
+.trait-box{background:#ffd700;color:#000;font-weight:bold;padding:12px 20px;margin:10px auto;border-radius:12px;width:fit-content;font-size:20px;}
+footer{position:absolute;bottom:20px;text-align:center;width:100%;font-size:15px;color:#ddd;text-shadow:1px 1px 4px rgba(0,0,0,0.5);}
+@media(max-width:768px){.container{margin:20px;padding:30px;}h2{font-size:28px;}.option{font-size:18px;}.next-btn{font-size:18px;padding:12px 30px;}.trait-box{font-size:18px;}}
+</style>
+</head>
+<body>
+<div class="container">
+    <h2 id="question">Loading question...</h2>
+    <div class="options">
+        <div class="option" onclick="selectOption(this)">Option 1</div>
+        <div class="option" onclick="selectOption(this)">Option 2</div>
+        <div class="option" onclick="selectOption(this)">Option 3</div>
+        <div class="option" onclick="selectOption(this)">Option 4</div>
+    </div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+</div>
+<footer>* This test is only for fun and self-evaluation.</footer>
+<script>
+// ================= 100 Realistic Personality Questions =================
+const allQuestions=[
+{question:"You prefer spending your weekend:",options:["Reading a book","Hanging out with friends","Trying a new hobby","Relaxing alone"],traits:["introvert","extrovert","creative","calm"]},
+{question:"When facing a difficult problem, you:",options:["Analyze logically","Ask others for advice","Go with your gut","Postpone it"],traits:["analytical","social","intuitive","procrastinator"]},
+{question:"At a party, you usually:",options:["Talk to a few close friends","Mingle with everyone","Observe quietly","Dance or perform"],traits:["introvert","extrovert","reserved","fun-loving"]},
+{question:"You receive critical feedback. You:",options:["Take it positively","Get defensive","Ignore it","Reflect quietly"],traits:["open-minded","sensitive","indifferent","thoughtful"]},
+{question:"You prefer your workspace to be:",options:["Neat and organized","Decorated and lively","Minimalist","Comfortable"],traits:["organized","creative","practical","easy-going"]},
+{question:"When making decisions, you:",options:["Follow rules","Follow feelings","Ask opinions","Take risks"],traits:["conscientious","emotional","social","adventurous"]},
+{question:"You like to solve problems by:",options:["Planning step by step","Trying out ideas","Thinking outside the box","Getting help"],traits:["strategic","experimental","creative","social"]},
+{question:"When under stress, you:",options:["Exercise","Eat comfort food","Meditate","Talk to friends"],traits:["healthy","comfort-seeking","calm","social"]},
+{question:"You handle conflicts by:",options:["Confront directly","Avoid them","Seek compromise","Ignore"],traits:["assertive","passive","diplomatic","indifferent"]},
+{question:"You enjoy:",options:["Reading and learning","Partying","Crafting","Outdoor sports"],traits:["intellectual","social","creative","active"]},
+{question:"Your ideal vacation is:",options:["Quiet cabin","City exploration","Art workshop","Adventure trip"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"In a group project, you:",options:["Take leadership","Do research","Support quietly","Come up with ideas"],traits:["leader","analytical","introvert","creative"]},
+{question:"You feel most energized when:",options:["Alone with thoughts","Socializing","Creating something","Trying new experiences"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"You prefer movies that are:",options:["Thought-provoking","Funny and light","Artistic","Action-packed"],traits:["intellectual","fun-loving","creative","adventurous"]},
+{question:"When you meet new people, you:",options:["Listen more","Talk more","Observe quietly","Make jokes"],traits:["introvert","extrovert","reserved","fun-loving"]},
+{question:"You handle deadlines by:",options:["Planning early","Last-minute rush","Ask for help","Do minimal work"],traits:["organized","procrastinator","social","lazy"]},
+{question:"You feel satisfied when:",options:["Helping others","Achieving personal goals","Learning new skills","Having fun"],traits:["caring","ambitious","curious","fun-loving"]},
+{question:"When reading, you prefer:",options:["Non-fiction","Fiction","Poetry","Comics"],traits:["analytical","imaginative","creative","fun-loving"]},
+{question:"You prefer friends who are:",options:["Reliable","Funny","Creative","Adventurous"],traits:["dependable","fun-loving","creative","adventurous"]},
+{question:"You like to spend free time:",options:["Meditating","Shopping","Painting","Sports"],traits:["calm","social","creative","active"]},
+{question:"You enjoy team activities:",options:["Only when necessary","Always","Sometimes","Rarely"],traits:["practical","extrovert","balanced","introvert"]},
+{question:"Your problem-solving style is:",options:["Logical","Creative","Collaborative","Intuitive"],traits:["analytical","creative","social","intuitive"]},
+{question:"When someone disagrees with you, you:",options:["Debate","Listen patiently","Ignore","Change mind"],traits:["assertive","thoughtful","indifferent","flexible"]},
+{question:"You feel most relaxed when:",options:["Alone","With friends","Creating art","Being active"],traits:["introvert","extrovert","creative","active"]},
+{question:"You prefer:",options:["Routine","Spontaneity","New experiences","Comfort"],traits:["organized","adventurous","curious","easy-going"]},
+{question:"Your friends describe you as:",options:["Honest","Funny","Smart","Adventurous"],traits:["honest","fun-loving","intellectual","adventurous"]},
+{question:"You enjoy challenges:",options:["Yes, always","Only when necessary","Sometimes","Rarely"],traits:["ambitious","practical","balanced","passive"]},
+{question:"You like to work:",options:["Independently","In a team","Hybrid","Depends on task"],traits:["introvert","social","flexible","practical"]},
+{question:"You feel energized by:",options:["Quiet time","Social gatherings","Creative activities","Sports"],traits:["introvert","extrovert","creative","active"]},
+{question:"You prefer tasks that are:",options:["Structured","Flexible","Creative","Physical"],traits:["organized","adaptable","creative","active"]},
+{question:"Your decision-making is:",options:["Quick","Slow and thoughtful","Collaborative","Impulsive"],traits:["decisive","thoughtful","social","impulsive"]},
+{question:"You enjoy:",options:["Solving puzzles","Storytelling","Painting","Adventure sports"],traits:["analytical","creative","creative","adventurous"]},
+{question:"You handle mistakes by:",options:["Learning","Blaming others","Ignoring","Feeling guilty"],traits:["responsible","blaming","indifferent","sensitive"]},
+{question:"You prefer learning:",options:["Alone","In groups","Hands-on","By reading"],traits:["introvert","social","practical","analytical"]},
+{question:"You feel fulfilled when:",options:["Helping others","Achieving goals","Creating","Exploring"],traits:["caring","ambitious","creative","adventurous"]},
+{question:"Your free time is spent:",options:["Quietly at home","With friends","Doing hobbies","Playing sports"],traits:["introvert","extrovert","creative","active"]},
+{question:"You prefer conversations that are:",options:["Deep","Casual","Funny","Inspirational"],traits:["thoughtful","fun-loving","fun-loving","inspiring"]},
+{question:"When faced with conflict, you:",options:["Confront","Avoid","Negotiate","Reflect"],traits:["assertive","passive","diplomatic","thoughtful"]},
+{question:"You like planning:",options:["Everything","Some things","Not at all","Depends"],traits:["organized","balanced","spontaneous","practical"]},
+{question:"Your focus is on:",options:["Details","Big picture","People","Fun"],traits:["analytical","visionary","social","fun-loving"]},
+{question:"You enjoy:",options:["Reading","Partying","Crafting","Sports"],traits:["introvert","extrovert","creative","active"]},
+{question:"Your ideal work style:",options:["Independent","Collaborative","Flexible","Structured"],traits:["introvert","social","adaptable","organized"]},
+{question:"You prefer movies that are:",options:["Dramatic","Funny","Artistic","Action-packed"],traits:["thoughtful","fun-loving","creative","adventurous"]},
+{question:"You approach problems by:",options:["Analyzing","Trying ideas","Asking for advice","Ignoring"],traits:["analytical","creative","social","passive"]},
+{question:"You are motivated by:",options:["Achievement","Recognition","Learning","Fun"],traits:["ambitious","social","curious","fun-loving"]},
+{question:"You like gifts that are:",options:["Practical","Fun","Creative","Expensive"],traits:["practical","fun-loving","creative","materialistic"]},
+{question:"You handle stress by:",options:["Exercising","Relaxing","Talking","Sleeping"],traits:["healthy","calm","social","lazy"]},
+{question:"You enjoy discussions that are:",options:["Logical","Funny","Imaginative","Exciting"],traits:["analytical","fun-loving","creative","adventurous"]},
+{question:"You prefer reading:",options:["Non-fiction","Fiction","Poetry","Comics"],traits:["analytical","imaginative","creative","fun-loving"]},
+{question:"You handle changes by:",options:["Adapting","Resisting","Planning","Ignoring"],traits:["adaptable","stubborn","organized","indifferent"]},
+{question:"You feel happiest when:",options:["Helping","Learning","Creating","Exploring"],traits:["caring","curious","creative","adventurous"]},
+{question:"You prefer to spend weekends:",options:["Relaxing","Socializing","Creating","Doing sports"],traits:["introvert","extrovert","creative","active"]},
+{question:"Your work style is:",options:["Organized","Flexible","Creative","Collaborative"],traits:["organized","adaptable","creative","social"]},
+{question:"You enjoy:",options:["Reading","Chatting","Painting","Adventure"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"You are known as:",options:["Responsible","Fun","Creative","Bold"],traits:["responsible","fun-loving","creative","adventurous"]},
+{question:"Your preferred environment:",options:["Quiet","Lively","Inspirational","Active"],traits:["introvert","extrovert","creative","active"]},
+{question:"You like to learn by:",options:["Reading","Discussing","Creating","Doing"],traits:["analytical","social","creative","practical"]},
+{question:"You handle criticism by:",options:["Reflecting","Defending","Ignoring","Overthinking"],traits:["thoughtful","defensive","indifferent","sensitive"]},
+{question:"Your friends describe you as:",options:["Honest","Funny","Creative","Adventurous"],traits:["honest","fun-loving","creative","adventurous"]},
+{question:"You enjoy conversations that are:",options:["Deep","Funny","Imaginative","Exciting"],traits:["thoughtful","fun-loving","creative","adventurous"]},
+{question:"You prefer tasks that are:",options:["Structured","Flexible","Creative","Physical"],traits:["organized","adaptable","creative","active"]},
+{question:"You feel more energized by:",options:["Quiet time","Socializing","Creating","Exploring"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"You like challenges that are:",options:["Logical","Creative","Social","Physical"],traits:["analytical","creative","social","active"]},
+{question:"You enjoy spending time:",options:["Alone","With friends","Doing hobbies","Adventure"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"You prefer decision-making to be:",options:["Logical","Intuitive","Collaborative","Spontaneous"],traits:["analytical","intuitive","social","spontaneous"]},
+{question:"You like to express yourself through:",options:["Words","Humor","Art","Action"],traits:["intellectual","fun-loving","creative","active"]},
+{question:"You handle conflicts by:",options:["Directly","Avoiding","Negotiating","Reflecting"],traits:["assertive","passive","diplomatic","thoughtful"]},
+{question:"You enjoy working on:",options:["Tasks","People","Creative projects","Physical work"],traits:["analytical","social","creative","active"]},
+{question:"You are motivated by:",options:["Success","Fun","Learning","Challenge"],traits:["ambitious","fun-loving","curious","adventurous"]},
+{question:"You prefer friends who are:",options:["Reliable","Funny","Creative","Bold"],traits:["dependable","fun-loving","creative","adventurous"]},
+{question:"You enjoy discussions that are:",options:["Logical","Funny","Imaginative","Exciting"],traits:["analytical","fun-loving","creative","adventurous"]},
+{question:"You feel fulfilled by:",options:["Helping","Learning","Creating","Exploring"],traits:["caring","curious","creative","adventurous"]},
+{question:"You handle change by:",options:["Adapting","Resisting","Planning","Ignoring"],traits:["adaptable","stubborn","organized","indifferent"]},
+{question:"Your ideal weekend is:",options:["Quiet","Social","Creative","Active"],traits:["introvert","extrovert","creative","active"]},
+{question:"You enjoy:",options:["Reading","Socializing","Art","Adventure"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"You prefer tasks that are:",options:["Structured","Flexible","Creative","Physical"],traits:["organized","adaptable","creative","active"]},
+{question:"You feel energized by:",options:["Alone time","Friends","Creating","Activity"],traits:["introvert","extrovert","creative","active"]},
+{question:"You like challenges that are:",options:["Logical","Creative","Social","Physical"],traits:["analytical","creative","social","active"]},
+{question:"You enjoy spending free time:",options:["Alone","With friends","Creating","Adventure"],traits:["introvert","extrovert","creative","adventurous"]},
+{question:"You prefer decision-making:",options:["Logical","Intuitive","Collaborative","Spontaneous"],traits:["analytical","intuitive","social","spontaneous"]},
+{question:"You like to express yourself through:",options:["Words","Humor","Art","Action"],traits:["intellectual","fun-loving","creative","active"]},
+{question:"You handle conflicts by:",options:["Directly","Avoiding","Negotiating","Reflecting"],traits:["assertive","passive","diplomatic","thoughtful"]},
+{question:"You enjoy working on:",options:["Tasks","People","Creative projects","Physical work"],traits:["analytical","social","creative","active"]},
+{question:"You are motivated by:",options:["Success","Fun","Learning","Challenge"],traits:["ambitious","fun-loving","curious","adventurous"]},
+{question:"You prefer friends who are:",options:["Reliable","Funny","Creative","Bold"],traits:["dependable","fun-loving","creative","adventurous"]},
+{question:"You enjoy discussions that are:",options:["Logical","Funny","Imaginative","Exciting"],traits:["analytical","fun-loving","creative","adventurous"]},
+{question:"You feel fulfilled by:",options:["Helping","Learning","Creating","Exploring"],traits:["caring","curious","creative","adventurous"]},
+{question:"You handle change by:",options:["Adapting","Resisting","Planning","Ignoring"],traits:["adaptable","stubborn","organized","indifferent"]},
+{question:"Your ideal weekend is:",options:["Quiet","Social","Creative","Active"],traits:["introvert","extrovert","creative","active"]},
+{question:"You enjoy:",options:["Reading","Socializing","Art","Adventure"],traits:["introvert","extrovert","creative","adventurous"]}
+];
+// ================= Variables =================
+let currentQuestionIndex=0;
+let traitCount={};
+let selectedQuestions=[];
+
+function pickRandomQuestions(){
+    selectedQuestions=[];
+    const usedIndices=new Set();
+    while(selectedQuestions.length<20){
+        let r=Math.floor(Math.random()*allQuestions.length);
+        if(!usedIndices.has(r)){
+            selectedQuestions.push(allQuestions[r]);
+            usedIndices.add(r);
+        }
+    }
+}
+
+function loadQuestion(){
+    if(currentQuestionIndex>=selectedQuestions.length){
+        showResult();
+        return;
+    }
+    const q=selectedQuestions[currentQuestionIndex];
+    document.getElementById('question').textContent=`${currentQuestionIndex+1}. ${q.question}`;
+    const optionsDiv=document.querySelectorAll('.option');
+    optionsDiv.forEach((opt,i)=>{
+        opt.textContent=q.options[i];
+        opt.classList.remove('selected');
+    });
+}
+
+function selectOption(optionDiv){
+    document.querySelectorAll('.option').forEach(opt=>opt.classList.remove('selected'));
+    optionDiv.classList.add('selected');
+}
+
+function nextQuestion(){
+    const selected=document.querySelector('.option.selected');
+    if(!selected){alert("Please select an option!"); return;}
+    const q=selectedQuestions[currentQuestionIndex];
+    const selectedIndex=Array.from(document.querySelectorAll('.option')).indexOf(selected);
+    const trait=q.traits[selectedIndex];
+    traitCount[trait]=(traitCount[trait]||0)+1;
+    currentQuestionIndex++;
+    loadQuestion();
+}
+
+function showResult(){
+    const container=document.querySelector('.container');
+    const sortedTraits=Object.entries(traitCount).sort((a,b)=>b[1]-a[1]);
+    const topTraits=sortedTraits.slice(0,3).map(t=>capitalizeFirstLetter(t[0]));
+    container.innerHTML=`
+        <h2>Your Personality Type</h2>
+        <p style="margin-top:15px; font-size:20px;">Based on your answers, your main personality traits are:</p>
+        <div class="trait-box">${topTraits[0]}</div>
+        <div class="trait-box">${topTraits[1]}</div>
+        <div class="trait-box">${topTraits[2]}</div>
+        <button class="next-btn" style="margin-top:30px;" onclick="restartTest()">Try Again</button>
+    `;
+}
+
+function restartTest(){
+    traitCount={};
+    currentQuestionIndex=0;
+    pickRandomQuestions();
+    document.querySelector('.container').innerHTML=`
+        <h2 id="question">Loading question...</h2>
+        <div class="options">
+            <div class="option" onclick="selectOption(this)">Option 1</div>
+            <div class="option" onclick="selectOption(this)">Option 2</div>
+            <div class="option" onclick="selectOption(this)">Option 3</div>
+            <div class="option" onclick="selectOption(this)">Option 4</div>
+        </div>
+        <button class="next-btn" onclick="nextQuestion()">Next</button>
+    `;
+    loadQuestion();
+}
+
+function capitalizeFirstLetter(str){return str.charAt(0).toUpperCase()+str.slice(1);}
+pickRandomQuestions();
+loadQuestion();
+</script>
+</body>
+</html>

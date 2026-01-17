@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fajita&display=swap" rel="stylesheet">
+
+    <title>Personality Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+
+        /* Background image with dark overlay */
+        body {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('image.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        /* Container for all content */
+        .overlay {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Heading at the top */
+        .overlay h1 {
+            font-family: 'Fajita', sans-serif;
+            font-size: 128px;
+            font-weight: 1500;
+            color: #ffd700;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+            margin: 50px 0 25px 0; /* space from top */
+        }
+
+        /* Centered paragraph and button */
+        .center-content {
+            flex: 1; /* take remaining vertical space */
+            display: flex;
+            flex-direction: column;
+            justify-content: top ; /* center vertically */
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .center-content p {
+            font-size: 25px;
+            max-width: 700px;
+            margin-bottom: 130px;
+            color: #f0f0f0;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+        }
+
+        .start-btn {
+            background: #ff4500;
+            color: #fff;
+            font-size: 38px;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .start-btn:hover {
+            background: #e03e00;
+            transform: scale(1.05);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            font-size: 20px;
+            color: #ddd;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Responsive adjustments */
+        @media(max-width: 768px){
+            .overlay h1 {
+                font-size: 48px;
+            }
+
+            .center-content p {
+                font-size: 18px;
+            }
+
+            .start-btn {
+                font-size: 18px;
+                padding: 15px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+        <h1>Check Your Personality</h1>
+
+        <div class="center-content">
+            <p>Your personality is waiting to be discovered — are you ready?</p>
+            <button class="start-btn" onclick="startTest()">Start Test</button>
+        </div>
+    </div>
+
+    <footer>
+        * This test is only for fun and self-evaluation.
+    </footer>
+
+    <script>
+        function startTest() {
+            window.location.href = 'test.html'; // Redirect to test page
+        }
+    </script>
+
+</body>
+</html>
